@@ -163,5 +163,21 @@ def connect_node():
     response = {'message': "All nodes are connected. The MOMO Blockchain now contains the following nodes:" ,'total_nodes': list(blockchain.nodes) }
     return jsonify(response),201
 
+#replacing chain by longest chain if needed
+@app.route('/replace-chain',methods=['GET'])
+def replacing_chain():
+    is_chain_replaced = blockchain.replace_chain()
+    if is_chain_replaced:
+        response = {
+            'message' : 'The nodes had different chains so the chain was replaced by the longest one.',
+            'new_chain': blockchain.chain
+        }
+    else :
+        response = {
+            'message': 'All good. The exisiting chain is the largest one',
+            'actual_chain' : blockchain.chain
+        }    
+    return jsonify(response), 200
+
 #run the app
 app.run(host = '0.0.0.0', port = 5000)
